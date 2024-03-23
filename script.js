@@ -1,7 +1,7 @@
 const mainMap = {
     coordinates: [],
     businesses: [],
-    map: map,
+    map: 'map',
     markers: [],
 
     initMap() {
@@ -15,8 +15,12 @@ const mainMap = {
         });
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            minZoom: 18,
+            minZoom: 16,
         }).addTo(this.map);
+        L.marker(this.coordinates)
+            .addTo(this.map)
+            .bindPopup('<p1><b>you are here</b><br></p1>')
+            .openPopup();
     },
     addMarkers() {
         for (let i = 0; i < this.businesses.length; i++) {
@@ -34,7 +38,7 @@ async function getCoordinates() {
 };
 async function getFoursquare(business) {
     try {
-        const accessToken = 'fsq3BevgdtBtsndDQQhjKnmFQ19eYaU6W7Im+m8nHI/4vBs=';
+        const accessToken = '' //api key foursquare//;
         const { coordinates } = mainMap;
         const [lat, lon] = coordinates;
         const limit = 5;
