@@ -18,7 +18,6 @@ const mainMap = {
             minZoom: 18,
         }).addTo(this.map);
     },
-
     addMarkers() {
         for (let i = 0; i < this.businesses.length; i++) {
             const { lat, lon, name } = this.businesses[i];
