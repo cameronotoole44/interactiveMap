@@ -5,9 +5,14 @@ const mainMap = {
     markers: [],
 
     initMap() {
+        if (!this.coordinates.length) {
+            console.error('Coordinates not available');
+            return;
+        }
         this.buildMap();
         this.addMarkers();
     },
+
     buildMap() {
         this.map = L.map('map', {
             center: this.coordinates,
@@ -19,8 +24,14 @@ const mainMap = {
         }).addTo(this.map);
         L.marker(this.coordinates)
             .addTo(this.map)
-            .bindPopup('<p1><b>you are here</b><br></p1>')
+            .bindPopup('<p1><b>You are here</b><br></p1>')
             .openPopup();
+    },
+    clearMarkers() {
+        for (let marker of this.markers) {
+            marker.remove();
+        }
+        this.markers = [];
     },
     addMarkers() {
         for (let i = 0; i < this.businesses.length; i++) {
@@ -43,7 +54,7 @@ async function getCoordinates() {
 }
 async function getFoursquare(business) {
     try {
-        const accessToken = '' //api key foursquare//;
+        const accessToken = ''; //api key foursquare//;
         const { coordinates } = mainMap;
         const [lat, lon] = coordinates;
         const limit = 5;
@@ -57,7 +68,7 @@ async function getFoursquare(business) {
         const data = await response.json();
         return processBusinesses(data.results);
     } catch (error) {
-        console.error('error fetching data:', error);
+        console.error('error fetching data from Foursquare:', error);
         return [];
     }
 };
@@ -65,24 +76,29 @@ function processBusinesses(results) {
     return results.map(element => ({
         name: element.name,
         lat: element.location.lat,
-        long: element.location.lng
+        lon: element.location.lng
     }));
 };
 document.getElementById('submit').addEventListener('click', async (event) => {
     event.preventDefault()
 
     try {
-        let business = document.getElementById('business').value;
+        let business = document.getElementById('businessTypes').value;
         let data = await getFoursquare(business);
         data && data.length > 0
-            ? (mainMap.businesses = processBusinesses(data), mainMap.addMarkers()) // checks if data is truthy and if it contains items if true the markers are added
+            ? (mainMap.businesses = processBusinesses(data),
+                mainMap.addMarkers()) // checks if data is truthy and if it contains items if true the markers are added
             : console.error('no data received or empty response');
     } catch (error) {
         console.error('error fetching data:', error); // if falsy returns error message
     }
 });
 window.onload = async () => {
-    const coordinates = await getCoordinates()
-    mainMap.coordinates = coordinates
-    mainMap.buildMap()
+    const coordinates = await getCoordinates();
+    if (coordinates) {
+        mainMap.coordinates = coordinates;
+        mainMap.buildMap();
+    } else {
+        console.error('Coordinates not available');
+    }
 };
