@@ -22,7 +22,6 @@ const mainMap = {
 
     addMarkers() {
         this.markers = []; // initializes empty array first to store markers
-
         for (let i = 0; i < this.businesses.length; i++) {
             const marker = L.marker([
                 this.businesses[i].lat,
@@ -41,32 +40,48 @@ async function getCoordinates() {
     return [position.coords.latitude, position.coords.longitude]
 }
 // foursquare data
+// async function getFoursquare(business) {
+//     const accessToken = 'my_api_key'; //add api
+//     const { coordinates } = mainMap;
+//     const [lat, lon] = coordinates;
+
+//     const url = `https://api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat},${lon}&oauth_token=${accessToken}`; //add api
+
+//     try {
+//         const response = await fetch(url);
+
+//         if (!response.ok) {
+//             throw new Error('failed to fetch data');
+//         }
+//         const data = await response.json();
+//         const businesses = processBusinesses(data.results);
+//         return businesses;
+//     } catch (error) {
+//         console.error('error fetching data:', error);
+//         return []; // returns empty array if theres an error
+//     }
+// } // try refactoring this function
 async function getFoursquare(business) {
-    const accessToken = 'my_api_key'; //add api
-    const { coordinates } = mainMap;
-    const [lat, lon] = coordinates;
-
-    const url = `https://api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat},${lon}&oauth_token=${accessToken}`; //add api
-
     try {
-        const response = await fetch(url);
+        const accessToken = 'my_api_key';
+        const { coordinates } = mainMap;
+        const [lat, lon] = coordinates;
+        const limit = 5;
 
+        const url = `https://api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat},${lon}&oauth_token=${accessToken}`;
+
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error('failed to fetch data');
         }
+
         const data = await response.json();
-        const businesses = processBusinesses(data.results);
-        return businesses;
+        return processBusinesses(data.results);
     } catch (error) {
         console.error('error fetching data:', error);
-        return []; // returns empty array if theres an error
+        return [];
     }
-
 }
-
-
-
-
 
 function processBusinesses(results) {
     return results.map(element => ({
@@ -87,6 +102,30 @@ window.onload = async () => {
 // business submit button
 document.getElementById('submit').addEventListener('click', async (event) => {
     event.preventDefault()
-    let business = document.getElementById('business').value
-    console.log(business)
-})
+
+    // try {
+    //     let business = document.getElementById('business').value;
+    //     let data = await getFoursquareData(business);
+
+    //     if (data && data.length > 0) {
+    //         mainMap.businesses = processBusinesses(data);
+    //         mainMap.addMarkers();
+    //     } else {
+    //         console.error('no data received or empty response');
+    //     }
+    // } catch (error) {
+    //     console.error('error fetching data:', error);
+    // }
+
+    // ternary operator instead of if/else 
+    try {
+        let business = document.getElementById('business').value;
+        let data = await getFoursquare(business);
+
+        data && data.length > 0
+            ? (mainMap.businesses = processBusinesses(data), mainMap.addMarkers()) // checks if data is truthy and if it contains items if true the markers are added
+            : console.error('no data received or empty response');
+    } catch (error) {
+        console.error('error fetching data:', error); // if falsy returns error message
+    }
+});
