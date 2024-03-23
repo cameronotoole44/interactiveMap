@@ -31,10 +31,10 @@ async function getCoordinates() {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
     return [position.coords.latitude, position.coords.longitude]
-}
+};
 async function getFoursquare(business) {
     try {
-        const accessToken = 'my_api_key';
+        const accessToken = 'fsq3BevgdtBtsndDQQhjKnmFQ19eYaU6W7Im+m8nHI/4vBs=';
         const { coordinates } = mainMap;
         const [lat, lon] = coordinates;
         const limit = 5;
@@ -51,19 +51,19 @@ async function getFoursquare(business) {
         console.error('error fetching data:', error);
         return [];
     }
-}
+};
 function processBusinesses(results) {
     return results.map(element => ({
         name: element.name,
-        lat: element.geocodes.main.latitude,
-        long: element.geocodes.main.longitude
+        lat: element.main.lat,
+        long: element.main.lng
     }));
-}
+};
 window.onload = async () => {
     const coordinates = await getCoordinates()
     mainMap.coordinates = coordinates
     mainMap.buildMap()
-}
+};
 document.getElementById('submit').addEventListener('click', async (event) => {
     event.preventDefault()
 
