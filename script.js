@@ -1,4 +1,4 @@
-// create map as an object
+// create map 
 const mainMap = {
     coordinates: [],
     businesses: [],
@@ -12,8 +12,17 @@ const mainMap = {
             zoom: 10,
         });
         //tiles for different viewpoints
-        // create/add geolocation pin
-    }
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            minZoom: '18',
+        }).addTo(this.map)
+
+        // creates/ adds marker to map
+        const marker = L.marker(this.coordinates)
+        marker.addTo(this.map).bindPopup('<p1><b>you are here</b></p1>').openPopup();
+
+    },
+
 }
 
 //get coordinates geolocation 
@@ -22,5 +31,15 @@ async function getCoordinates() {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
     return [position.coords.latitude, position.coords.longitude]
-} // gets user coordinates
+}
+window.onload = async () => {
+    const coordinates = await getCoordinates()
+    console.log(coordinates)
+    mainMap.coordinates = coordinates
+    mainMap.buildMap()
+}
 
+
+// get business type from user
+// create/add geolocation pin
+//event listeners for getting business type from user 
