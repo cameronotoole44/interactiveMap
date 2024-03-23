@@ -31,11 +31,16 @@ const mainMap = {
     },
 };
 async function getCoordinates() {
-    const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject)
-    })
-    return [position.coords.latitude, position.coords.longitude]
-};
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject)
+        });
+        return [position.coords.latitude, position.coords.longitude];
+    } catch (error) {
+        console.error('Error getting coordinates:', error);
+        return null;
+    }
+}
 async function getFoursquare(business) {
     try {
         const accessToken = '' //api key foursquare//;
