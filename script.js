@@ -68,11 +68,6 @@ function processBusinesses(results) {
         long: element.location.lng
     }));
 };
-window.onload = async () => {
-    const coordinates = await getCoordinates()
-    mainMap.coordinates = coordinates
-    mainMap.buildMap()
-};
 document.getElementById('submit').addEventListener('click', async (event) => {
     event.preventDefault()
 
@@ -86,3 +81,8 @@ document.getElementById('submit').addEventListener('click', async (event) => {
         console.error('error fetching data:', error); // if falsy returns error message
     }
 });
+window.onload = async () => {
+    const coordinates = await getCoordinates()
+    mainMap.coordinates = coordinates
+    mainMap.buildMap()
+};
