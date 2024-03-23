@@ -3,3 +3,16 @@
   background-color: #808080;
   border: 2px solid #000;
 }
+
+#map::before {
+  content: "Map is loading...";
+  font-size: 4em;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  margin-top: 4em;
+}
+.leaflet-popup-content-wrapper {
+  width: 100%;
+}
