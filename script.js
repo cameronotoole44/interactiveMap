@@ -1,7 +1,7 @@
 const mainMap = {
     coordinates: [],
     businesses: [],
-    map: null,
+    map: map,
     markers: [],
 
     initMap() {
