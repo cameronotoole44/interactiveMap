@@ -55,8 +55,8 @@ async function getFoursquare(business) {
 function processBusinesses(results) {
     return results.map(element => ({
         name: element.name,
-        lat: element.main.lat,
-        long: element.main.lng
+        lat: element.location.lat,
+        long: element.location.lng
     }));
 };
 window.onload = async () => {
