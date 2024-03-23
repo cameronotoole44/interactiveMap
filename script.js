@@ -40,32 +40,32 @@ async function getCoordinates() {
     })
     return [position.coords.latitude, position.coords.longitude]
 }
-
-
+// foursquare data
 async function getFoursquare(business) {
-    const options = {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            Authorization: 'my_api_key'
-        }
-    };
-
-    const limit = 5;
+    const accessToken = 'my_api_key'; //add api
     const { coordinates } = mainMap;
-    const lat = coordinates[0];
-    const lon = coordinates[1];
+    const [lat, lon] = coordinates;
+
+    const url = `https://api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat},${lon}&oauth_token=${accessToken}`; //add api
 
     try {
-        const response = await fetch(`https:api.foursquare.com/v3/places/search?&query=${business}&limit=${limit}&ll=${lat},${lon}`, options);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error('failed to fetch data');
+        }
         const data = await response.json();
         const businesses = processBusinesses(data.results);
         return businesses;
     } catch (error) {
         console.error('error fetching data:', error);
-        return []; // returns empty array if theres an error 
+        return []; // returns empty array if theres an error
     }
-} // come back and refactor this mess 
+
+}
+
+
+
 
 
 function processBusinesses(results) {
